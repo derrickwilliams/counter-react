@@ -1,4 +1,4 @@
-import { MouseEventHandler, PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import { NavToDashboard } from "./lib/navButtons";
 import { useNavigate } from "react-router-dom";
 

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { GoGear, GoHome } from 'react-icons/go';
-import { FC, ReactNode } from "react";
+import { FC } from "react";
 
 export const NavToSettings = () => <NavTo path="/settings" Icon={GoGear}/>
 
