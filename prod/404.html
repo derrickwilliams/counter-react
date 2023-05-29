@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter - Not Found</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+        .visible {
+            display: initial;
+        }
+        .goodbye-wave {
+            font-size: 5rem;
+            text-align: center;
+            display: none;
+        }
+
+        .redirect-msg {
+            font-size: 3rem;
+            text-align: center;
+        }
+
+        .redirect-msg span {
+            display: block;
+        }
+    </style>
+    <script>
+        window.addEventListener('load', () => {
+        console.log('page loaded');
+        handleNotFoundPageLoaded();
+    });
+
+    function handleNotFoundPageLoaded() {
+        const startTime = new Date();
+        const redirectTimeout = 3000; // 10 seconds
+
+        const msgEl = document.querySelector('.redirect-msg');
+        const msgTimeoutDisplayEl = document.querySelector('.redirect-msg span');
+        const goodbyeEl = document.querySelector('.goodbye-wave');
+
+        const redirectInterval = setInterval(() => {
+            const currentTime = new Date();
+            const timeDiff = currentTime.getTime() - startTime.getTime();
+            const timeRemaining = Math.ceil((redirectTimeout - Math.floor(timeDiff)) / 1000);
+
+            if (timeRemaining <= 0) {
+                clearInterval(redirectInterval);
+                msgEl && (
+                    msgEl.style.display = 'none'
+                )
+                goodbyeEl && (
+                    goodbyeEl.style.display = 'block'
+                )
+                setTimeout(() => {
+                    window.location.replace(window.location.origin);
+                }, 1000);
+
+            } else {
+                msgTimeoutDisplayEl
+                    && (msgTimeoutDisplayEl.textContent = `${timeRemaining} seconds`);
+
+                console.log(`waiting ... time remaining: ${timeRemaining} seconds`);
+            }
+        }, 1000);
+    }
+
+    </script>
+</head>
+<body style="text-align:center;">
+    <h1>404</h1>
+    <p class="redirect-msg">Redirecting in ... <span>3 seconds</span></p>
+    <p class="goodbye-wave">👋🏻</p>
+</body>
+</html>
