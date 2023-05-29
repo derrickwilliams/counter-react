@@ -180,6 +180,8 @@ button {
 .counter-item-view .item-title {
   text-align: center;
   font-size: 5rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .counter-item-view .item-value {
