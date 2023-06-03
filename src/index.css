@@ -11,9 +11,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-  --counter-color-blue-600: #004c8a;
-  --counter-color-blue-100: #ecf6ff;
-  --counter-box-shadow: 0px 0px 5px -3px black;
+  --tally-color-blue-600: #004c8a;
+  --tally-color-blue-100: #ecf6ff;
+  --tally-box-shadow: 0px 0px 5px -3px black;
 }
 
 * {
@@ -44,11 +44,11 @@
 
 .body-container {
   padding: 1rem;
-  background-color: var(--counter-color-blue-100);
+  background-color: var(--tally-color-blue-100);
 }
 
 .action-footer {
-  box-shadow: var(--counter-box-shadow);
+  box-shadow: var(--tally-box-shadow);
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -105,95 +105,3 @@ button {
   border: solid 1px black;
 }
 
-.counter-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.counter-list li {
-  background-color: white;
-  padding: 1rem;
-  box-shadow: var(--counter-box-shadow);
-}
-
-.counter-item-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.counter-item-list .counter-item-list-item {
-  background-color: white;
-  padding: 1rem;
-  box-shadow: 0px 0px 5px -3px black;
-  text-align: center;
-}
-
-.counter-item-list .counter-item-list-item .item-title {
-  font-style: italic;
-}
-
-.counter-item-list .counter-item-list-item .item-value {
-  font-weight: bold;
-}
-
-.date-display {
-  /* padding: 1rem 0 0; */
-}
-
-.counter-view-action-bar {
-  display: flex;
-  justify-content: space-between;
-}
-
-.counter-item-view {
-  padding-top: 4rem;
-}
-
-.counter-item-view-actions {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 75px);
-  /* grid-template-areas: "inc1 inc2 inc3" "apply apply apply"; */
-  gap: 2rem;
-}
-
-.counter-item-view-actions button {
-  background-color: var(--counter-color-blue-100);
-  /* border: solid 1px var(--counter-color-blue-600); */
-  padding: 1rem .5rem;
-  border-radius: 5px;
-  box-shadow: var(--counter-box-shadow);
-}
-
-.counter-item-view-actions button:not(.submit) {
-  /* grid-area: inc; */
-
-}
-
-.counter-item-view-actions button.reset {
-  background-color: orangered;
-  color: white;
-}
-
-.counter-item-view-actions button.submit {
-  /* grid-area: apply */
-  background-color: green;
-  grid-column: 2 / span 2;
-}
-
-.counter-item-view .item-title {
-  text-align: center;
-  font-size: 5rem;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.counter-item-view .item-value {
-  text-align: center;
-  font-size: 9rem;
-  color: green;
-}

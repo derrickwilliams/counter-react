@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import { Dashboard } from './screens/Dashboard.tsx';
 import { Settings } from './screens/Settings.tsx';
-import { CounterView } from './screens/CounterView.tsx';
+import { TallyListView } from './screens/TallyListView.tsx';
 
 const router = createBrowserRouter([
   {
@@ -24,8 +24,8 @@ const router = createBrowserRouter([
         Component: Settings
       },
       {
-        path: 'counters/:counterId',
-        Component: CounterView
+        path: 'tallies/:tallyId',
+        Component: TallyListView
       }
     ]
   }

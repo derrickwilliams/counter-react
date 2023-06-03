@@ -1,46 +1,48 @@
 import { FC, useState } from "react";
 import { Modal, ModalProps } from "../Modal";
-import { NavToDashboard } from "../lib/navButtons"
+import { Calendar } from "../system/icons";
 
-enum CountUnit {
+import './TallyListView.css';
+
+enum TallyUnit {
     NONE = 'NONE',
     MINUTES = 'MINUTES'
 }
 
-interface CounterItem {
+interface TallyItem {
     title: string;
     id: string;
-    unit: CountUnit;
+    unit: TallyUnit;
     value: number;
     goal?: number;
 }
 
-const counterData: CounterItem[] = [
+const counterData: TallyItem[] = [
     {
         title: 'Push-ups',
         id: 'push-ups',
-        unit: CountUnit.NONE,
+        unit: TallyUnit.NONE,
         value: 23,
         goal: 100
     },
     {
         title: 'Squats',
         id: 'squats',
-        unit: CountUnit.NONE,
+        unit: TallyUnit.NONE,
         value: 77,
         goal: 100
     },
     {
         title: 'Burpees',
         id: 'burpess',
-        unit: CountUnit.NONE,
+        unit: TallyUnit.NONE,
         value: 30,
         goal: 100
     },
     {
         title: 'Meditation',
         id: 'meditation',
-        unit: CountUnit.MINUTES,
+        unit: TallyUnit.MINUTES,
         value: 12,
         goal: 30
     }
@@ -53,39 +55,40 @@ interface DatePickerProps {
 }
 
 const DatePicker = (props: DatePickerProps) => {
-    return <div className="date-display">{props.currentDate.toDateString()}</div>;
+    return <div>
+        <Calendar className="date-display" /><span className="date-display">{props.currentDate.toDateString()}</span>
+    </div>
 };
 
 
-interface CounterItemProps {
-    item: CounterItem;
-    onClick: (item: CounterItem) => void;
+interface TallyItemProps {
+    item: TallyItem;
+    onClick: (item: TallyItem) => void;
 }
 
-const CounterItem: FC<CounterItemProps> = ({ item, onClick }) => {
+const TallyItem: FC<TallyItemProps> = ({ item, onClick }) => {
     return (
-        <div className="counter-item-list-item" onClick={() => onClick(item)}>
+        <div className="tally-item-list-item" onClick={() => onClick(item)}>
             <div className="item-title">{item.title}</div>
             <div className="item-value">{item.value}</div>
         </div>
     )
 };
 
-export const CounterView = () => {
-    const [selectedModal, setSelectedModal] = useState<CounterItem | null>(null);
+export const TallyListView = () => {
+    const [selectedModal, setSelectedModal] = useState<TallyItem | null>(null);
 
     return <>
-        <div className="counter-view-action-bar">
-            <NavToDashboard />
+        <div className="tally-view-action-bar">
             <DatePicker currentDate={new Date()} />
         </div>
-        <div className="counter-item-list" >
+        <div className="tally-item-list" >
             {counterData.map((item, idx) =>
-                <CounterItem key={idx} onClick={() => setSelectedModal(item)} item={item} />
+                <TallyItem key={idx} onClick={() => setSelectedModal(item)} item={item} />
             )}
         </div>
         {selectedModal &&
-            <CounterItemModal
+            <TallyItemModal
                 item={selectedModal}
                 isOpen={true}
                 onClose={() => setSelectedModal(null)}
@@ -94,11 +97,11 @@ export const CounterView = () => {
     </>
 }
 
-interface CounterItemModalProps extends ModalProps, Omit<CounterItemProps, 'onClick'> {}
-const CounterItemModal = ({
+interface TallyItemModalProps extends ModalProps, Omit<TallyItemProps, 'onClick'> {}
+const TallyItemModal = ({
     item,
     ...props
-}: CounterItemModalProps) => {
+}: TallyItemModalProps) => {
     const originalValue = item.value;
     const [currentValue, setCurrentValue] = useState(originalValue);
 
@@ -112,12 +115,12 @@ const CounterItemModal = ({
 
     return (
         <Modal {...props} fullscreen>
-            <div className="counter-item-view">
+            <div className="tally-item-view">
                 <h2 className="item-title">{item.title}</h2>
                 <h3 className="item-value">{currentValue}</h3>
             </div>
 
-            <div className="counter-item-view-actions">
+            <div className="tally-item-view-actions">
                 <button onClick={handleIncrement(1)}>+ 1</button>
                 <button onClick={handleIncrement(5)}>+ 5</button>
                 <button onClick={handleIncrement(10)}>+ 10</button>
