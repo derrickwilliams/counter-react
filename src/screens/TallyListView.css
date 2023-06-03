@@ -1,0 +1,92 @@
+.counter-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.counter-list li {
+  background-color: white;
+  padding: 1rem;
+  box-shadow: var(--tally-box-shadow);
+}
+
+.tally-item-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.tally-item-list .tally-item-list-item {
+  background-color: white;
+  padding: 1rem;
+  box-shadow: 0px 0px 5px -3px black;
+  text-align: center;
+}
+
+.tally-item-list .tally-item-list-item .item-title {
+  font-style: italic;
+}
+
+.tally-item-list .tally-item-list-item .item-value {
+  font-weight: bold;
+}
+
+.date-display {
+  /* padding: 1rem 0 0; */
+}
+
+.tally-view-action-bar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tally-item-view {
+  padding-top: 4rem;
+}
+
+.tally-item-view-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 75px);
+  /* grid-template-areas: "inc1 inc2 inc3" "apply apply apply"; */
+  gap: 2rem;
+}
+
+.tally-item-view-actions button {
+  background-color: var(--tally-color-blue-100);
+  /* border: solid 1px var(--tally-color-blue-600); */
+  padding: 1rem .5rem;
+  border-radius: 5px;
+  box-shadow: var(--tally-box-shadow);
+}
+
+.tally-item-view-actions button:not(.submit) {
+  /* grid-area: inc; */
+
+}
+
+.tally-item-view-actions button.reset {
+  background-color: orangered;
+  color: white;
+}
+
+.tally-item-view-actions button.submit {
+  /* grid-area: apply */
+  background-color: green;
+  grid-column: 2 / span 2;
+}
+
+.tally-item-view .item-title {
+  text-align: center;
+  font-size: 5rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.tally-item-view .item-value {
+  text-align: center;
+  font-size: 9rem;
+  color: green;
+}

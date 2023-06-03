@@ -18,3 +18,5 @@ export const TallyBrand: FC<TallyBrandProps> = ({ full = false, inverse = false,
 
     return <C onClick={onClick} />
 }
+
+export { GrCalendar as Calendar } from 'react-icons/gr';
