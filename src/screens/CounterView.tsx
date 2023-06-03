@@ -80,8 +80,8 @@ export const CounterView = () => {
             <DatePicker currentDate={new Date()} />
         </div>
         <div className="counter-item-list" >
-            {counterData.map((item) =>
-                <CounterItem onClick={() => setSelectedModal(item)} item={item} />
+            {counterData.map((item, idx) =>
+                <CounterItem key={idx} onClick={() => setSelectedModal(item)} item={item} />
             )}
         </div>
         {selectedModal &&
