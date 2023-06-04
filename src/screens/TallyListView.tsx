@@ -1,69 +1,52 @@
-import { FC, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Modal, ModalProps } from "../Modal";
 import { Calendar } from "../system/icons";
 
+import { TallyItem as TallyItemInterface } from '../data/items';
+import { getByDateKey } from '../data/data';
+
 import './TallyListView.css';
 
-enum TallyUnit {
-    NONE = 'NONE',
-    MINUTES = 'MINUTES'
-}
-
-interface TallyItem {
-    title: string;
-    id: string;
-    unit: TallyUnit;
-    value: number;
-    goal?: number;
-}
-
-const counterData: TallyItem[] = [
-    {
-        title: 'Push-ups',
-        id: 'push-ups',
-        unit: TallyUnit.NONE,
-        value: 23,
-        goal: 100
-    },
-    {
-        title: 'Squats',
-        id: 'squats',
-        unit: TallyUnit.NONE,
-        value: 77,
-        goal: 100
-    },
-    {
-        title: 'Burpees',
-        id: 'burpess',
-        unit: TallyUnit.NONE,
-        value: 30,
-        goal: 100
-    },
-    {
-        title: 'Meditation',
-        id: 'meditation',
-        unit: TallyUnit.MINUTES,
-        value: 12,
-        goal: 30
-    }
-];
+type Empty<T> = T | null | undefined;
 
 interface DatePickerProps {
     currentDate: Date;
     allowNext?: boolean;
     allowPrev?: boolean;
+    static?: boolean;
+    onDateChanged?: (changed: OnDateChangedArgs) => void;
+}
+
+interface OnDateChangedArgs {
+    date: Empty<string>;
+    timestamp: Empty<number>;
 }
 
 const DatePicker = (props: DatePickerProps) => {
-    return <div>
-        <Calendar className="date-display" /><span className="date-display">{props.currentDate.toDateString()}</span>
+    const { onDateChanged } = props;
+    const dateInputRef = useRef<HTMLInputElement>(null);
+    const handleDateChanged = useCallback(() => {
+        console.log('making new callback');
+        onDateChanged && onDateChanged({
+            date: dateInputRef.current?.value,
+            timestamp: dateInputRef.current?.valueAsNumber
+        });
+    }, [onDateChanged]);
+
+    return <div className="t-date-picker">
+        {!props.static &&
+            <input type="date" className="t-input" ref={dateInputRef} onChange={handleDateChanged}/>}
+        {props.static &&
+            <>
+                <span className="date-display">{props.currentDate.toDateString()}</span>
+                <Calendar className="date-display" />
+            </>
+        }
     </div>
 };
-
-
 interface TallyItemProps {
-    item: TallyItem;
-    onClick: (item: TallyItem) => void;
+    item: TallyItemInterface;
+    onClick: (item: TallyItemInterface) => void;
 }
 
 const TallyItem: FC<TallyItemProps> = ({ item, onClick }) => {
@@ -76,17 +59,31 @@ const TallyItem: FC<TallyItemProps> = ({ item, onClick }) => {
 };
 
 export const TallyListView = () => {
-    const [selectedModal, setSelectedModal] = useState<TallyItem | null>(null);
+    const [selectedModal, setSelectedModal] = useState<TallyItemInterface | null>(null);
+    const [currentDate, setCurrentDate] = useState('2023-06-03');
+    const [tallies, setTallies] = useState(getByDateKey(currentDate))
+
+    useEffect(() => {
+        setTallies(getByDateKey(currentDate))
+    }, [currentDate]);
 
     return <>
         <div className="tally-view-action-bar">
-            <DatePicker currentDate={new Date()} />
+            <DatePicker currentDate={new Date(currentDate)} onDateChanged={(d) => {
+                console.log('date changed', d)
+                d.date && setCurrentDate(d.date)
+            }} />
         </div>
-        <div className="tally-item-list" >
-            {counterData.map((item, idx) =>
-                <TallyItem key={idx} onClick={() => setSelectedModal(item)} item={item} />
-            )}
-        </div>
+        {tallies.length > 0 &&
+            <div className="tally-item-list">
+                {tallies.map((item, idx) =>
+                    <TallyItem key={idx} onClick={() => setSelectedModal(item)} item={item} />
+                )}
+            </div>
+        }
+        {tallies.length === 0 &&
+            <div>no tallies for {currentDate}</div>
+        }
         {selectedModal &&
             <TallyItemModal
                 item={selectedModal}
