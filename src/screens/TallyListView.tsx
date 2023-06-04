@@ -2,7 +2,7 @@ import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Modal, ModalProps } from "../Modal";
 import { Calendar } from "../system/icons";
 
-import { TallyItem as TallyItemInterface } from '../data/items';
+import { TallyItemTrackable as TallyItemInterface } from '../data/types';
 import { getByDateKey } from '../data/data';
 
 import './TallyListView.css';

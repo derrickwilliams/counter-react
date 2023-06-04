@@ -1,5 +1,4 @@
-import { TallyItemTrackable, TallyUnit } from "./items";
-
+import { TallyItemTrackable, TallyUnit } from "./types";
 
 export const trackedTalliesByDate: { [dateKey: string]: TallyItemTrackable[] } = {
     '2023-06-01': [
