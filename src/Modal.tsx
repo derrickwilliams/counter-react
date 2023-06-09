@@ -3,14 +3,15 @@ import { NavToDashboard } from "./lib/navButtons";
 import { useNavigate } from "react-router-dom";
 
 import { AiOutlineAppstoreAdd as AddIcon } from 'react-icons/ai'
+import { noop } from "./utils";
 
 export interface ModalProps extends PropsWithChildren {
     isOpen: boolean;
-    onClose: () => void;
+    onClose?: () => void;
     fullscreen?: boolean;
 }
 
-export const Modal = ({ isOpen, onClose, fullscreen = false, children }: ModalProps) => {
+export const Modal = ({ isOpen, onClose = noop, fullscreen = false, children }: ModalProps) => {
     const modalContainerClasses = [
         'modal-container',
         'modal-overlay',
@@ -33,7 +34,7 @@ export const MenuModal = (props: ModalProps) => {
     const n = useNavigate();
     const handleNav = (path?: string) => () => {
         path && n(path);
-        props.onClose();
+        props.onClose && props.onClose();
     };
 
     return (
