@@ -1,0 +1,54 @@
+{
+    "trackables": [
+        {
+            "name": "Push-ups",
+            "id": "push-ups",
+            "unit": "SINGLE"
+        },
+        {
+            "name": "Squats",
+            "id": "squats",
+            "unit": "NONE"
+        },
+        {
+            "name": "Burpees",
+            "id": "burpees",
+            "unit": "NONE"
+        },
+        {
+            "name": "Meditation",
+            "id": "meditation",
+            "unit": "MINUTE"
+        }
+    ],
+    "tallySets": [
+        {
+            "id": "ts001",
+            "name": "Tally Set 01"
+        },
+        {
+            "id": "ts002",
+            "name": "Tally Set 01"
+        }
+    ],
+    "tallySetTrackables": [
+        {
+            "id": "tst001",
+            "trackableId": "push-ups",
+            "tallySetId": "ts001",
+            "goal": 100
+        },
+        {
+            "id": "tst002",
+            "trackableId": "burpees",
+            "tallySetId": "ts001",
+            "goal": 50
+        },
+        {
+            "id": "tst003",
+            "trackableId": "meditation",
+            "tallySetId": "ts001",
+            "goal": 10
+        }
+    ]
+}

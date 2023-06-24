@@ -1,0 +1,31 @@
+{
+    "totals": {
+        "tst001": {
+            "tallySetTrackableId": "tst001",
+            "date": 1686787200,
+            "value": 20
+        }
+    },
+    "history": [
+        {
+            "tallySetTrackableId": "tst001",
+            "date": 1686787200,
+            "value": 20
+        },
+        {
+            "tallySetTrackableId": "tst001",
+            "date": 1686787200,
+            "value": 20
+        },
+        {
+            "tallySetTrackableId": "tst001",
+            "date": 1686787200,
+            "value": -8
+        },
+        {
+            "tallySetTrackableId": "tst002",
+            "date": 1686787200,
+            "value": 10
+        }
+    ]
+}

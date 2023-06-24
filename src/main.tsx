@@ -24,7 +24,7 @@ const router = createBrowserRouter([
         Component: Settings
       },
       {
-        path: 'tallies/:tallyId',
+        path: 'tallies/:tallySetId',
         Component: TallyListView
       }
     ]

@@ -1,19 +1,15 @@
-import { useOutletContext } from "react-router-dom"
-import { CatalogControl } from "../data/catalog"
-import { useEffect, useMemo, useState } from "react";
+ import { CatalogContext, useCatalogData } from '../data/Catalog.tsx';
+import { useContext, useEffect, useMemo, useState } from "react";
 import { CatalogItemForm } from "../lib/CatalogItemForm";
 import { TallyItem } from "../data/types";
 import { List } from "../system/Lists";
 import { IconLink } from "../system/icons";
 
 export const Settings = () => {
-    const catalog = useOutletContext<CatalogControl>();
-    const [target, setTarget] = useState<TallyItem | null>(null);
-    const items = useMemo(() => {
-        console.log('catalog is new');
+    const catalog = useCatalogData();
 
-        return catalog.getItems();
-    }, [catalog]);
+    const [target, setTarget] = useState<TallyItem | null>(null);
+    const items = useMemo(() => catalog.getTrackableItems(), [catalog]);
 
     useEffect(() => {
         setTarget(items[0])

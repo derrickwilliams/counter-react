@@ -1,131 +1,103 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
-import { Modal, ModalProps } from "../Modal";
-import { Calendar } from "../system/icons";
-
-import { TallyItemTrackable as TallyItemInterface } from '../data/types';
-import { getByDateKey } from '../data/data';
+import { useEffect, useState } from 'react';
 
 import './TallyListView.css';
+import { useCatalogData } from '../data/Catalog.tsx';
+import { useParams } from 'react-router-dom';
+import {
+    TallySetTrackableWithValue,
+    TallySetTrackable,
+} from '../data/types.ts';
+import { Dbg } from '../lib/Dbg.tsx';
+import { DatePicker } from '../lib/DatePicker.tsx';
+import { TallyItemModal } from '../lib/TallyItemModal.tsx';
+import { TallyList } from '../lib/TallyList.tsx';
 
-type Empty<T> = T | null | undefined;
+import trackingData from '../../db/tracking.json';
 
-interface DatePickerProps {
-    currentDate: Date;
-    allowNext?: boolean;
-    allowPrev?: boolean;
-    static?: boolean;
-    onDateChanged?: (changed: OnDateChangedArgs) => void;
-}
+const calculateTotals = (
+    history: typeof trackingData.history,
+    items: TallySetTrackable[]
+) => {
+    const trackableTotals = items.reduce<TrackingTotals>((totals, item) => {
+        const itemHistory = history.filter(
+            (h) => h.tallySetTrackableId === item.id
+        );
+        const itemTotal = itemHistory.reduce((total, i) => total + i.value, 0);
+        const newTotals = {
+            ...totals,
+            [item.id]: itemTotal,
+        };
 
-interface OnDateChangedArgs {
-    date: Empty<string>;
-    timestamp: Empty<number>;
-}
+        return newTotals;
+    }, {});
 
-const DatePicker = (props: DatePickerProps) => {
-    const { onDateChanged } = props;
-    const dateInputRef = useRef<HTMLInputElement>(null);
-    const handleDateChanged = useCallback(() => {
-        console.log('making new callback');
-        onDateChanged && onDateChanged({
-            date: dateInputRef.current?.value,
-            timestamp: dateInputRef.current?.valueAsNumber
-        });
-    }, [onDateChanged]);
-
-    return <div className="t-date-picker">
-        {!props.static &&
-            <input type="date" className="t-input" ref={dateInputRef} onChange={handleDateChanged}/>}
-        {props.static &&
-            <>
-                <span className="date-display">{props.currentDate.toDateString()}</span>
-                <Calendar className="date-display" />
-            </>
-        }
-    </div>
+    return items.map((trackable) => {
+        return {
+            ...trackable,
+            value: trackableTotals[trackable.id],
+        };
+    });
 };
-interface TallyItemProps {
-    item: TallyItemInterface;
-    onClick: (item: TallyItemInterface) => void;
-}
 
-const TallyItem: FC<TallyItemProps> = ({ item, onClick }) => {
-    return (
-        <div className="tally-item-list-item" onClick={() => onClick(item)}>
-            <div className="item-title">{item.title}</div>
-            <div className="item-value">{item.value}</div>
-        </div>
-    )
-};
+type TrackingTotals = Record<string, number>;
 
 export const TallyListView = () => {
-    const [selectedModal, setSelectedModal] = useState<TallyItemInterface | null>(null);
+    const { tallySetId } = useParams();
+    const [selectedModal, setSelectedModal] =
+        useState<TallySetTrackableWithValue | null>(null);
     const [currentDate, setCurrentDate] = useState('2023-06-03');
-    const [tallies, setTallies] = useState(getByDateKey(currentDate))
+    const { loadTallySetById, tallySet } = useCatalogData();
+    const [tallySetTrackables, setTallySetTrackables] = useState<
+        TallySetTrackableWithValue[]
+    >([]);
 
     useEffect(() => {
-        setTallies(getByDateKey(currentDate))
-    }, [currentDate]);
+        tallySetId && loadTallySetById(tallySetId);
+    }, [loadTallySetById, tallySetId]);
 
-    return <>
-        <div className="tally-view-action-bar">
-            <DatePicker currentDate={new Date(currentDate)} onDateChanged={(d) => {
-                console.log('date changed', d)
-                d.date && setCurrentDate(d.date)
-            }} />
-        </div>
-        {tallies.length > 0 &&
-            <div className="tally-item-list">
-                {tallies.map((item, idx) =>
-                    <TallyItem key={idx} onClick={() => setSelectedModal(item)} item={item} />
-                )}
-            </div>
+    useEffect(() => {
+        if (!tallySet) {
+            return;
         }
-        {tallies.length === 0 &&
-            <div>no tallies for {currentDate}</div>
-        }
-        {selectedModal &&
-            <TallyItemModal
-                item={selectedModal}
-                isOpen={true}
-                onClose={() => setSelectedModal(null)}
-            />
-        }
-    </>
-}
-
-interface TallyItemModalProps extends ModalProps, Omit<TallyItemProps, 'onClick'> {}
-const TallyItemModal = ({
-    item,
-    ...props
-}: TallyItemModalProps) => {
-    const originalValue = item.value;
-    const [currentValue, setCurrentValue] = useState(originalValue);
-
-    const handleIncrement = (amount: number) => () => {
-        setCurrentValue((curr) => curr + amount);
-    };
-
-    const handleReset = () => {
-        setCurrentValue(originalValue);
-    }
+        const trackablesWithTotal = calculateTotals(
+            trackingData.history,
+            tallySet.items
+        );
+        setTallySetTrackables(trackablesWithTotal);
+    }, [tallySet]);
 
     return (
-        <Modal {...props} fullscreen>
-            <div className="tally-item-view">
-                <h2 className="item-title">{item.title}</h2>
-                <h3 className="item-value">{currentValue}</h3>
+        <>
+            <div className="tally-view-action-bar">
+                <DatePicker
+                    currentDate={new Date(currentDate)}
+                    onDateChanged={(d) => {
+                        d.date && setCurrentDate(d.date);
+                    }}
+                />
             </div>
 
-            <div className="tally-item-view-actions">
-                <button onClick={handleIncrement(1)}>+ 1</button>
-                <button onClick={handleIncrement(5)}>+ 5</button>
-                <button onClick={handleIncrement(10)}>+ 10</button>
-                <button className="reset" onClick={handleReset}>↩︎</button>
-                <button className="submit" onClick={() => {
-                    alert(`current value: ${currentValue}`)
-                }}>→</button>
-            </div>
-        </Modal>
+            <TallyList
+                tallies={tallySetTrackables}
+                onItemSelected={setSelectedModal}
+            >
+                <div>no tallies for {currentDate}</div>
+            </TallyList>
+
+            <Dbg>
+                <pre>{JSON.stringify(tallySet, null, 2)}</pre>
+            </Dbg>
+
+            {selectedModal && (
+                <TallyItemModal
+                    item={selectedModal}
+                    isOpen={true}
+                    onClose={() => setSelectedModal(null)}
+                    onSubmit={(trackableId, value) =>
+                        console.log('trackable submitted', trackableId, value)
+                    }
+                />
+            )}
+        </>
     );
-}
+};
